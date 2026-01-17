@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuki Café</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ================= BASE ================= */
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(#f6c1a5,#f3b28f);
+  color:#2b1b14;
+}
+
+
+/* ================= HERO ================= */
+.hero{
+  height:100vh;
+  background:url('1.jpg') center/cover no-repeat;
+  position:relative;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.55);
+}
+.hero-content{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.hero h1{
+  font-family:'Rock Salt',cursive;
+  font-size:52px;
+  color:#fff;
+}
+
+/* ================= LANGUAGE BUTTON ================= */
+.lang-btn{
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:3;
+  background:#fff;
+  border:none;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* ================= MENU ================= */
+.menu{
+  max-width:900px;
+  margin:auto;
+  padding:60px 16px;
+}
+
+.section{
+  margin-bottom:55px;
+}
+
+.section-title{
+  font-family:'Rock Salt',cursive;
+  font-size:30px;
+  text-align:center;
+  margin-bottom:18px;
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 14px;
+  background:rgba(255,255,255,.75);
+  border-radius:12px;
+  margin-bottom:8px;
+
+  opacity:0;
+  transform:translateY(10px);
+  transition:.4s ease;
+}
+.item.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.price{
+  font-weight:600;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+  background:#2b1b14;
+  color:#fff;
+  padding:36px 20px;
+  text-align:center;
+}
+
+.address-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:#d4af37;
+  text-decoration:none;
+  font-weight:500;
+  transition:.25s ease;
+}
+.address-link:hover{
+  opacity:.85;
+  transform:translateY(-2px);
+}
+
+.social{
+  margin-top:18px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
+.social a{
+  color:#fff;
+  font-size:24px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <button class="lang-btn" onclick="toggleLang()">EN</button>
+  <div class="hero-content">
+    <h1>Yuki Café</h1>
+  </div>
+</section>
+
+<!-- ================= MENU ================= -->
+<section class="menu" id="menu"></section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+
+  <a
+    id="address"
+    class="address-link"
+    href="https://maps.app.goo.gl/FU7dcZFVKwbepaQb8"
+    target="_blank"
+  >
+    <span>📍</span>
+    <span id="addressText">Baron Mall – El Shorouk – Cairo</span>
+  </a>
+
+  <p id="hours">Daily 10:00 AM – 2:00 AM</p>
+
+  <div class="social">
+    <a href="https://web.facebook.com/profile.php?id=61584202268275"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.instagram.com/yukicafe.eg/"><i class="fab fa-instagram"></i></a>
+    <a href="https://wa.me/201070008500"><i class="fab fa-whatsapp"></i></a>
+    <a href="tel:01070008500"><i class="fas fa-phone"></i></a>
+  </div>
+</footer>
+
+<script>
+/* ================= LANGUAGE ================= */
+let lang="en";
+
+/* ================= MENU DATA ================= */
+
+const sections = [
+
+/* 1️⃣ Hot Drinks */
+{
+  title_en:"Hot Drinks",
+  title_ar:"مشروبات ساخنة",
+  items:[
+    ["Turkish Coffee","قهوة تركي","35 - 45"],
+    ["Espresso","إسبريسو","40 - 45"],
+    ["French Coffee","قهوة فرنسي","45"],
+    ["Macchiato","ماكياتو","40 - 50"],
+    ["Cappuccino","كابتشينو","70 - 85"],
+    ["Latte","لاتيه","60 - 75"],
+    ["Flat White","فلات وايت","70 - 85"],
+    ["American Coffee","قهوة أمريكي","50"],
+    ["Hot Chocolate","هوت شوكليت","70 - 85"],
+    ["Mocha","موكا","75"],
+    ["White Mocha","وايت موكا","75"],
+    ["Cortado","كورتادو","50"],
+    ["Spanish Latte","سبانيش لاتيه","75"],
+    ["Hot Matcha","ماتشا ساخن","80"],
+    ["Hot Taro Latte","تارو لاتيه ساخن","75"],
+    ["Herbs","أعشاب","20 - 25"],
+    ["Tea","شاي","20"]
+  ]
+},
+
+/* 2️⃣ Iced Drinks */
+{
+  title_en:"Iced Drinks",
+  title_ar:"مشروبات باردة",
+  items:[
+    ["Ice Cherry Cola","آيس تشيري كولا","95 - 110"],
+    ["Ice Tea Passion","آيس تي باشن","90 - 110"],
+    ["Ice Tea Peach","آيس تي خوخ","90 - 110"],
+    ["Ice Tea Mango","آيس تي مانجو","95 - 115"],
+    ["Ice Tea Raspberry","آيس تي توت","95 - 115"],
+    ["Iced Latte","آيس لاتيه","85 - 110"],
+    ["Iced Spanish Latte","آيس سبانيش لاتيه","95 - 120"],
+    ["Iced Americano","آيس أمريكانو","60 - 80"],
+    ["Iced Mocha","آيس موكا","95 - 120"],
+    ["Iced White Mocha","آيس وايت موكا","95 - 120"],
+    ["Iced Chocolate","آيس شوكولاتة","85 - 110"]
+  ]
+},
+
+/* 3️⃣ Milk Tea */
+{
+  title_en:"Milk Tea",
+  title_ar:"ميلك تي",
+  items:[
+    ["Milk Tea","ميلك تي","80 - 105"],
+    ["Milk Tea Brown Sugar","ميلك تي براون شوغر","90 - 110"]
+  ]
+},
+
+/* 4️⃣ Japanese Mojito */
+{
+  title_en:"Japanese Mojito",
+  title_ar:"موهيتو ياباني",
+  items:[
+    ["Strawberry","فراولة","80 - 100"],
+    ["Mix Berry","توت مشكل","85 - 100"],
+    ["Mango","مانجو","85 - 105"],
+    ["Berry","توت","80 - 100"],
+    ["Passion Fruit","باشن فروت","90 - 110"],
+    ["Peach","خوخ","80 - 100"],
+    ["Lychee Bobbing","ليتشي","105"]
+  ]
+},
+
+/* 5️⃣ Matcha */
+{
+  title_en:"Matcha",
+  title_ar:"ماتشا",
+  items:[
+    ["Matcha","ماتشا","95 - 110"],
+    ["Matcha Strawberry","ماتشا فراولة","115 - 140"],
+    ["Matcha Coconut","ماتشا جوز هند","110 - 135"],
+    ["Matcha Mango","ماتشا مانجو","115 - 140"]
+  ]
+},
+
+/* 6️⃣ Taro */
+{
+  title_en:"Taro",
+  title_ar:"تارو",
+  items:[
+    ["Taro","تارو","90 - 105"],
+    ["Ice Taro Latte","آيس تارو لاتيه","95 - 110"]
+  ]
+},
+
+/* 7️⃣ Milkshake */
+{
+  title_en:"Milkshake",
+  title_ar:"ميلك شيك",
+  items:[
+    ["Taro Milkshake","ميلك شيك تارو","120 - 145"],
+    ["Matcha Milkshake","ميلك شيك ماتشا","120 - 145"],
+    ["Oreo Milkshake","ميلك شيك أوريو","120 - 145"],
+    ["Bubblegum Milkshake","ميلك شيك بابل جام","130 - 155"],
+    ["Chocolate Milkshake","ميلك شيك شوكولاتة","110 - 135"],
+    ["Mango Milkshake","ميلك شيك مانجو","120 - 145"]
+  ]
+},
+
+/* 8️⃣ Mochi */
+{
+  title_en:"Mochi",
+  title_ar:"موتشي",
+  items:[
+    ["Chocolate","شوكولاتة","60"],
+    ["Strawberry","فراولة","60"],
+    ["Mango","مانجو","60"],
+    ["Red Velvet","ريد فيلفت","60"],
+    ["Matcha","ماتشا","75"],
+    ["Taro","تارو","70"],
+    ["Mochi Box 3pcs","علبة موتشي 3 قطع","150"],
+    ["Mochi Box 6pcs","علبة موتشي 6 قطع","270"]
+  ]
+},
+
+/* 9️⃣ Extras */
+{
+  title_en:"Extras",
+  title_ar:"إضافات",
+  items:[
+    ["Boba","بوبّا","25"],
+    ["Espresso Shot","شوت إسبريسو","35"],
+    ["Flavour","نكهة","15"]
+  ]
+}
+
+];
+
+/* ================= BUILD MENU ================= */
+function buildMenu(){
+  const menu=document.getElementById("menu");
+  menu.innerHTML="";
+  sections.forEach(sec=>{
+    const div=document.createElement("div");
+    div.className="section";
+    div.innerHTML=`<h2 class="section-title">${lang==="en"?sec.title_en:sec.title_ar}</h2>`;
+    sec.items.forEach(i=>{
+      div.innerHTML+=`
+        <div class="item">
+          <span>${lang==="en"?i[0]:i[1]}</span>
+          <span class="price">${i[2]} EGP</span>
+        </div>`;
+    });
+    menu.appendChild(div);
+  });
+}
+
+/* ================= LANGUAGE TOGGLE ================= */
+function toggleLang(){
+  lang = lang==="en" ? "ar" : "en";
+  document.querySelector(".lang-btn").innerText = lang.toUpperCase();
+  buildMenu();
+
+  document.getElementById("addressText").innerText =
+    lang==="en"
+      ?"Baron Mall – El Shorouk – Cairo"
+      :"مول البارون – الشروق – القاهرة";
+
+  document.getElementById("hours").innerText =
+    lang==="en"
+      ?"Daily 10:00 AM – 2:00 AM"
+      :"يوميًا من 10 صباحًا حتى 2 صباحًا";
+}
+
+/* ================= SOFT SCROLL ANIMATION ================= */
+window.addEventListener("scroll",()=>{
+  document.querySelectorAll(".item").forEach(el=>{
+    const r=el.getBoundingClientRect();
+    if(r.top < window.innerHeight-40 && r.bottom > 0){
+      el.classList.add("show");
+    }else{
+      el.classList.remove("show");
+    }
+  });
+});
+
+/* ================= INIT ================= */
+buildMenu();
+</script>
+
+</body>
+</html>
